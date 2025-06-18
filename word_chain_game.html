@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>끝말잇기 게임</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+        }
+        .login-screen, .game-screen {
+            padding: 20px;
+        }
+        .game-screen {
+            display: none;
+        }
+        h1 {
+            text-align: center;
+            color: #4a69bd;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4a69bd;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #3c55a5;
+        }
+        #game-board {
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .word-container {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .my-word {
+            background-color: #e3f2fd;
+            text-align: right;
+        }
+        .other-word {
+            background-color: #f1f8e9;
+        }
+        .system-message {
+            background-color: #fff3e0;
+            text-align: center;
+            font-style: italic;
+        }
+        .chat-container {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        #chat-messages {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .chat-input-group {
+            display: flex;
+        }
+        #chat-input {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .player-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .player-box {
+            background-color: #e8eaf6;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            width: 48%;
+        }
+        .current-turn {
+            border: 2px solid #4a69bd;
+            font-weight: bold;
+        }
+        .last-word {
+            font-weight: bold;
+            color: #d32f2f;
+            font-size: 20px;
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #ffebee;
+            border-radius: 5px;
+        }
+        .message {
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+        .my-message {
+            text-align: right;
+            color: #1e88e5;
+        }
+        .other-message {
+            text-align: left;
+            color: #43a047;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 로그인 화면 -->
+        <div class="login-screen" id="login-screen">
+            <h1>끝말잇기 게임</h1>
+            <div class="input-group">
+                <label for="nickname">닉네임</label>
+                <input type="text" id="nickname" placeholder="사용할 닉네임을 입력하세요">
+            </div>
+            <button id="join-btn">게임 참가하기</button>
+        </div>
+
+        <!-- 게임 화면 -->
+        <div class="game-screen" id="game-screen">
+            <h1>끝말잇기</h1>
+            
+            <div class="player-info">
+                <div class="player-box" id="my-info">
+                    나: <span id="my-nickname">닉네임</span>
+                </div>
+                <div class="player-box" id="opponent-info">
+                    상대방: <span id="opponent-nickname">대기중...</span>
+                </div>
+            </div>
+
+            <div class="last-word" id="last-word">
+                시작 단어: 코딩
+            </div>
+
+            <div class="input-group">
+                <label for="word-input">단어 입력</label>
+                <div class="chat-input-group">
+                    <input type="text" id="word-input" placeholder="단어를 입력하세요">
+                    <button id="submit-word">제출</button>
+                </div>
+            </div>
+
+            <div id="game-board">
+                <!-- 게임 진행 상황이 여기에 표시됩니다 -->
+                <div class="word-container system-message">게임이 시작되었습니다!</div>
+            </div>
+
+            <div class="chat-container">
+                <h3>채팅</h3>
+                <div id="chat-messages">
+                    <!-- 채팅 메시지가 여기에 표시됩니다 -->
+                </div>
+                <div class="chat-input-group">
+                    <input type="text" id="chat-input" placeholder="메시지 입력...">
+                    <button id="send-chat">전송</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="word_chain_game.js"></script>
+</body>
+</html> 
